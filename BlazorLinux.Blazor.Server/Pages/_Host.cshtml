@@ -1,0 +1,49 @@
+﻿@page "/"
+@namespace BlazorLinux.Blazor.Server
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, shrink-to-fit=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <!-- meta name="theme-color" content="#000000" -->
+    <title>BlazorLinux.Blazor</title>
+    <base href="~/" />
+</head>
+<body>
+    @if(Request.Headers["User-Agent"].ToString().Contains("MSIE") || Request.Headers["User-Agent"].ToString().Contains("Trident")) {
+        <div style='position: fixed; top:250px; text-align: center; width: 100%; font-family: Segoe UI; font-size: 33px;'><h1>Internet Explorer is Unsupported</h1></div>
+    }
+    else {
+        @(await Html.RenderComponentAsync<DevExpress.ExpressApp.Blazor.Components.Splashscreen>(RenderMode.Static, new { Caption = "BlazorLinux.Blazor", LoadingMessage = "Loading...", ImagePath = "images/SplashScreen.svg" }))
+    }
+    @(await Html.RenderComponentAsync<DevExpress.ExpressApp.Blazor.Components.BootstrapThemeLink>(RenderMode.Static))
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:700&display=swap" rel="stylesheet">
+    <link href="_content/DevExpress.Blazor/dx-blazor.css" rel="stylesheet" />
+    <link href="_content/DevExpress.ExpressApp.Blazor/styles.css" rel="stylesheet" />
+    <link href="css/site.css" rel="stylesheet" />
+    <script src="_content/DevExpress.ExpressApp.Blazor/scripts.js"></script>
+
+    <app class="d-none">
+        @* Remove the following line of code to disable prerendering *@
+        @(await Html.RenderComponentAsync<App>(RenderMode.Server))
+    </app>
+    <script src="_framework/blazor.server.js"></script>
+    <script>
+        const observer = new MutationObserver(function(mutationsList, observer) {
+            var appElement = document.querySelector("app");
+            if(appElement && appElement.innerText && appElement.innerText.trim()) {
+                observer.disconnect();
+                if(document.getElementById('applicationLoadingPanel')) {
+                    document.getElementById('applicationLoadingPanel').remove();
+                }
+                appElement.classList.remove("d-none");
+            }
+        });
+        observer.observe(document.body, { childList: true, subtree: true });
+    </script>
+</body>
+</html>
